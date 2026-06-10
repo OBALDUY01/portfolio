@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800" viewBox="0 0 1200 800" fill="none">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#121212"/>
+      <stop offset="1" stop-color="#2a2a2a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="800" rx="24" fill="url(#g)"/>
+  <rect x="80" y="80" width="1040" height="640" rx="32" fill="#161616" stroke="#3A3A3A"/>
+  <circle cx="340" cy="320" r="110" fill="#6BFF4A" fill-opacity="0.18"/>
+  <path d="M240 520L420 340L540 450L760 220L940 400" stroke="#6BFF4A" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="180" y="600" width="840" height="18" rx="9" fill="#2B2B2B"/>
+  <text x="600" y="700" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="700" fill="#FFFFFF">Portfolio Preview</text>
+</svg>
