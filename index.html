@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIKOREY — 2D & 3D Motion Designer</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#000;--white:#fff;--bg:#f2f2f0;--text:#111;--accent:#6bff4a;--border:#d8d8d8}
+html{scroll-behavior:smooth}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;overflow-x:hidden}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:16px 40px;background:var(--black);gap:12px}
+.nav-side{display:flex;align-items:center;gap:6px;color:var(--white);font-size:12px;font-weight:500;letter-spacing:.03em;flex-wrap:wrap}
+.nav-side a{color:var(--white);text-decoration:none;white-space:nowrap}
+.nav-side a:hover{opacity:.65}
+.nav-sep{color:#444;margin:0 2px}
+.btn-contact{background:var(--white);color:var(--black)!important;border-radius:20px;padding:8px 22px;font-size:12px;font-weight:700;text-decoration:none!important;margin-left:12px;letter-spacing:.03em;white-space:nowrap}
+.nav-burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+.nav-burger span{display:block;width:22px;height:2px;background:white;border-radius:2px;transition:all .3s}
+.nav-mobile{display:none;position:fixed;top:53px;left:0;right:0;background:var(--black);padding:20px 24px;z-index:199;flex-direction:column;gap:0;border-top:1px solid #222}
+.nav-mobile.open{display:flex}
+.nav-mobile a{color:var(--white);text-decoration:none;font-size:14px;font-weight:600;padding:14px 0;border-bottom:1px solid #1a1a1a}
+.nav-mobile a:last-child{border-bottom:none}
+.nav-mobile a:hover{opacity:.7}
+.hero{background:var(--black);padding-top:53px}
+.hero-grid{display:grid;grid-template-columns:1fr 2fr 1fr;border-bottom:1px solid #1e1e1e}
+.hero-side{border-right:1px solid #1e1e1e;min-height:300px;position:relative}
+.hero-side.r{border-right:none;border-left:1px solid #1e1e1e}
+.hero-center{position:relative}
+.hero-img{width:100%;height:300px;object-fit:cover;display:block}
+.ch{position:absolute;width:14px;height:14px;z-index:2}
+.ch::before,.ch::after{content:'';position:absolute;background:#666}
+.ch::before{width:14px;height:1px;top:50%;left:0;transform:translateY(-50%)}
+.ch::after{height:14px;width:1px;left:50%;top:0;transform:translateX(-50%)}
+.ch.tl{top:10px;left:10px}.ch.tr{top:10px;right:10px}.ch.bl{bottom:10px;left:10px}.ch.br{bottom:10px;right:10px}
+.hero-bottom{display:grid;grid-template-columns:1fr 2fr 1fr;padding:26px 0;align-items:center;border-bottom:1px solid #1e1e1e}
+.hero-logo{padding:0 40px;display:flex;align-items:center;gap:12px;border-right:1px solid #1e1e1e}
+.hero-logo-img{width:28px;height:28px;object-fit:cover;border-radius:2px}
+.hero-logo span{color:var(--white);font-size:13px;font-weight:800;letter-spacing:.1em}
+.hero-mid-div{border-right:1px solid #1e1e1e;min-height:50px}
+.hero-titles{padding:0 40px;text-align:right}
+.hero-titles p{color:var(--white);font-size:14px;font-weight:700;line-height:2}
+.lbl{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;color:#333;margin-bottom:22px;letter-spacing:.02em}
+.lbl-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.about{background:var(--bg);padding:60px 40px;display:grid;grid-template-columns:1fr 1fr;gap:60px;border-bottom:1px solid var(--border);position:relative}
+.about-text{font-size:22px;font-weight:700;line-height:1.35;text-transform:uppercase;max-width:460px}
+.skills{list-style:none;margin-bottom:26px}
+.sk{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:600;color:#333;letter-spacing:.06em;line-height:2.4;text-transform:uppercase}
+.dots{display:flex;gap:4px}.d{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.shapes{display:flex;gap:8px;margin-bottom:10px}
+.sh-gray{width:90px;height:66px;background:#c5c5c3;border-radius:3px}
+.sh-dark{width:90px;height:66px;background:#1c1c1c;border-radius:3px}
+.aname{font-size:13px;font-weight:700;color:#111;margin-top:4px}.aexp{font-size:11px;color:#888}
+.cc{position:absolute;font-size:9px;color:#bbb;letter-spacing:3px}
+.cc.bl{bottom:16px;left:20px}.cc.br{bottom:16px;right:20px}
+.exp{background:var(--bg);padding:60px 40px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;border-bottom:1px solid var(--border);position:relative}
+.exp-txt{font-size:11px;color:#555;line-height:1.9;text-transform:uppercase;font-weight:500;max-width:200px}
+.char-wrap{display:flex;align-items:center;justify-content:center}
+.char-wrap img{width:260px;object-fit:contain}
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tchip{display:flex;align-items:center;gap:9px;background:white;border:1px solid #e0e0e0;border-radius:10px;padding:9px 12px;font-size:11px;font-weight:600;color:#222;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ticon{width:24px;height:24px;flex-shrink:0;object-fit:contain;border-radius:4px}
+.figma-row{margin-top:8px}
+.figma-chip{display:flex;align-items:center;gap:9px;background:white;border:1px solid #e0e0e0;border-radius:10px;padding:9px 12px;font-size:11px;font-weight:600;color:#222;box-shadow:0 1px 3px rgba(0,0,0,.06);width:calc(33.33% - 6px);min-width:120px}
+.exp-footer{grid-column:span 3;display:flex;justify-content:space-between;padding-top:16px;font-size:11px;color:#aaa}
+.showreel{background:var(--black);padding:50px 40px 60px}
+.sr-dots{display:flex;justify-content:space-between;margin-bottom:22px}
+.sr-dots span{color:#2a2a2a;font-size:9px;letter-spacing:4px}
+.sr-title{text-align:center;font-size:36px;font-weight:800;color:var(--white);letter-spacing:.1em;text-transform:uppercase;margin-bottom:28px}
+.video-wrap{width:100%;aspect-ratio:16/9;background:#111;border-radius:3px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;cursor:pointer}
+.video-wrap img{width:100%;height:100%;object-fit:cover;object-position:center 30%;opacity:.8;transition:opacity .3s}
+.video-wrap:hover img{opacity:.95}
+.play-btn{position:absolute;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;transition:transform .2s;pointer-events:none}
+.video-wrap:hover .play-btn{transform:scale(1.1)}
+.play-btn svg{width:22px;height:22px;fill:white;margin-left:3px}
+.projs{background:var(--bg);padding:60px 40px}
+.projs-h{font-size:28px;font-weight:700;margin-bottom:0}
+.projs-yr{font-size:13px;color:#999;font-weight:400}
+.pb{margin-top:48px;padding-bottom:48px;border-bottom:1px solid var(--border)}
+.pb:last-child{border-bottom:none}
+.pimgs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;margin-bottom:16px}
+.pimgs img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block}
+.pmeta{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.plbl{font-size:11px;color:#999;font-weight:500;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.pname{font-size:14px;font-weight:700;color:#111}
+.ptype{font-size:12px;color:#666}
+.pdesc{font-size:12px;color:#555;line-height:1.75;max-width:320px}
+.see-proj{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#111;text-decoration:none;margin-top:12px;border-bottom:1px solid #111;padding-bottom:1px;transition:opacity .2s}
+.see-proj:hover{opacity:.5}
+.other{background:var(--bg);padding:40px 40px 60px;border-top:1px solid var(--border)}
+.other h2{font-size:24px;font-weight:600;margin-bottom:28px}
+.ogrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px}
+.ocard{overflow:hidden;cursor:pointer}
+.ocard img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;transition:transform .3s}
+.ocard:hover img{transform:scale(1.03)}
+.osee{display:block;font-size:11px;font-weight:600;color:#333;margin-top:8px;text-decoration:none}
+.osee:hover{color:#000;text-decoration:underline}
+.ytbanner{position:relative;overflow:hidden;min-height:520px;display:flex;flex-direction:column;justify-content:flex-end}
+.ytbanner-bg{width:100%;height:100%;object-fit:cover;object-position:center center;position:absolute;top:0;left:0}
+.go-wrap{position:absolute;top:42%;left:50%;transform:translate(-50%,-50%);z-index:3;text-decoration:none}
+.go-box{position:relative;padding:8px 16px;color:white;font-size:11px;font-weight:600;letter-spacing:.08em;cursor:pointer;display:inline-block}
+.go-corner{position:absolute;width:8px;height:8px}
+.go-corner::before,.go-corner::after{content:'';position:absolute;background:rgba(255,255,255,.7)}
+.go-corner::before{width:8px;height:1px;top:0;left:0}
+.go-corner::after{width:1px;height:8px;top:0;left:0}
+.go-corner.tr{top:0;right:0;transform:rotate(90deg)}
+.go-corner.br{bottom:0;right:0;transform:rotate(180deg)}
+.go-corner.bl{bottom:0;left:0;transform:rotate(270deg)}
+.go-corner.tl{top:0;left:0}
+.ytbanner-bottom{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;padding:0 50px 50px}
+.ytbanner-title{font-size:46px;font-weight:900;color:var(--white);line-height:1.05;text-transform:uppercase;letter-spacing:-.01em}
+.ytbanner-desc{font-size:12px;color:rgba(255,255,255,.75);line-height:1.8;max-width:230px}
+.contact{background:var(--bg);padding:80px 40px 40px;display:grid;grid-template-columns:1fr 1fr;gap:40px;border-top:1px solid var(--border)}
+.contact-h{font-size:40px;font-weight:700;line-height:1.15;max-width:500px}
+.clbl{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+.cinfo{font-size:13px;line-height:2;margin-bottom:28px}
+.cinfo a{color:var(--text);text-decoration:underline}
+.csocial{list-style:none;font-size:13px;line-height:2.4}
+.csocial a{color:var(--text);text-decoration:none}
+.csocial a:hover{text-decoration:underline}
+footer{background:var(--bg);padding:20px 40px 30px;font-size:11px;color:#999;border-top:1px solid var(--border)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(max-width:1024px){
+  nav{padding:14px 24px}
+  .about,.exp{padding:48px 24px}
+  .projs,.other,.showreel,.contact{padding-left:24px;padding-right:24px}
+  .ytbanner-title{font-size:34px}
+  .ytbanner-bottom{padding:0 30px 36px}
+  .contact-h{font-size:30px}
+  .about-text{font-size:18px}
+  .char-wrap img{width:200px}
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .figma-chip{width:calc(50% - 4px)}
+  .exp-footer{grid-column:span 3}
+}
+@media(max-width:768px){
+  nav{padding:12px 20px}
+  .nav-side{display:none}
+  .nav-burger{display:flex}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-side{display:none}
+  .hero-img{height:220px}
+  .hero-bottom{grid-template-columns:1fr;padding:18px 0}
+  .hero-logo{border-right:none;padding:0 20px 14px;border-bottom:1px solid #1e1e1e}
+  .hero-mid-div{display:none}
+  .hero-titles{padding:14px 20px 0;text-align:left}
+  .hero-titles p{font-size:13px;line-height:1.8}
+  .about{grid-template-columns:1fr;gap:32px;padding:40px 20px}
+  .about-text{font-size:17px}
+  .sh-gray,.sh-dark{width:70px;height:52px}
+  .exp{grid-template-columns:1fr;gap:28px;padding:40px 20px}
+  .exp-footer{grid-column:1;flex-direction:column;gap:6px}
+  .char-wrap img{width:200px}
+  .tgrid{grid-template-columns:repeat(2,1fr)}
+  .figma-chip{width:calc(50% - 4px)}
+  .showreel{padding:36px 20px 44px}
+  .sr-title{font-size:26px}
+  .projs{padding:40px 20px}
+  .projs-h{font-size:22px}
+  .pimgs{gap:1px}
+  .pmeta{grid-template-columns:1fr;gap:14px}
+  .other{padding:32px 20px 48px}
+  .ogrid{grid-template-columns:1fr 1fr}
+  .ytbanner{min-height:360px}
+  .ytbanner-title{font-size:26px}
+  .ytbanner-desc{display:none}
+  .ytbanner-bottom{padding:0 20px 28px}
+  .contact{grid-template-columns:1fr;padding:48px 20px 32px;gap:28px}
+  .contact-h{font-size:26px}
+  footer{padding:16px 20px 24px}
+  .svc-grid{grid-template-columns:1fr 1fr}
+  .steps{grid-template-columns:1fr 1fr}
+  .tquotes{grid-template-columns:1fr 1fr}
+  .services,.howwork,.testimonials{padding-left:24px;padding-right:24px}
+}
+/* ── Case Study ── */
+.ptagline{font-size:12px;color:#888;font-weight:500;margin-top:4px;margin-bottom:10px;font-style:italic}
+.case-study{overflow:hidden;max-height:0;transition:max-height .45s ease,opacity .3s ease;opacity:0;margin-top:0}
+.case-study.open{max-height:600px;opacity:1;margin-top:12px}
+.case-toggle{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:#666;text-decoration:none;cursor:pointer;background:none;border:none;padding:0;letter-spacing:.02em;margin-top:4px;transition:color .2s}
+.case-toggle:hover{color:#111}
+.case-toggle .ct-arrow{display:inline-block;transition:transform .3s;font-size:10px}
+.case-toggle.open .ct-arrow{transform:rotate(90deg)}
+.cs-block{margin-bottom:10px}
+.cs-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#aaa;margin-bottom:3px}
+.cs-val{font-size:12px;color:#444;line-height:1.7}
+/* ── Services ── */
+.services{background:var(--black);padding:70px 40px;border-bottom:1px solid #1e1e1e}
+.sec-head{margin-bottom:36px}
+.sec-head h2{font-size:28px;font-weight:800;color:var(--white);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.sec-head p{font-size:13px;color:#777;max-width:500px;line-height:1.6}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#1a1a1a;border:1px solid #1a1a1a}
+.svc-card{background:var(--black);padding:26px 24px;display:flex;flex-direction:column;gap:8px;transition:background .2s}
+.svc-card:hover{background:#0d0d0d}
+.svc-title{font-size:14px;font-weight:700;color:var(--white);letter-spacing:.02em}
+.svc-desc{font-size:12px;color:#666;line-height:1.65;flex:1}
+.svc-price{font-size:12px;font-weight:700;color:var(--accent);margin-top:6px;letter-spacing:.02em}
+.svc-note{font-size:11px;color:#444;margin-top:20px;line-height:1.7}
+/* ── How We Work ── */
+.howwork{background:var(--bg);padding:70px 40px;border-bottom:1px solid var(--border);border-top:1px solid var(--border)}
+.howwork h2{font-size:28px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:48px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
+.step{padding:32px 28px;border:1px solid var(--border);background:var(--bg);position:relative}
+.step-num{font-size:9px;font-weight:700;letter-spacing:.12em;color:#bbb;text-transform:uppercase;margin-bottom:16px}
+.step-title{font-size:15px;font-weight:800;color:#111;text-transform:uppercase;letter-spacing:.04em;margin-bottom:12px}
+.step-body{font-size:12px;color:#555;line-height:1.8}
+/* ── Testimonials ── */
+.testimonials{background:var(--black);padding:70px 40px;border-bottom:1px solid #1e1e1e}
+.testimonials h2{font-size:28px;font-weight:800;color:var(--white);letter-spacing:.06em;text-transform:uppercase;margin-bottom:40px}
+.tquotes{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#1e1e1e;border:1px solid #1e1e1e}
+.tquote{background:var(--black);padding:30px 26px;display:flex;flex-direction:column;gap:16px}
+.tq-text{font-size:13px;color:#ccc;line-height:1.75;font-style:italic;flex:1}
+.tq-author{font-size:11px;font-weight:700;color:#555;letter-spacing:.04em;text-transform:uppercase}
+/* ── Updated Contact ── */
+.contact-new{background:var(--black);padding:80px 40px 60px;border-top:1px solid #1e1e1e;text-align:center}
+.contact-new h2{font-size:42px;font-weight:800;color:var(--white);letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px}
+.contact-new .cn-sub{font-size:14px;color:#666;margin-bottom:44px;line-height:1.6}
+.cn-btns{display:flex;gap:16px;justify-content:center;margin-bottom:28px;flex-wrap:wrap}
+.cn-btn{display:inline-flex;align-items:center;gap:8px;padding:16px 36px;font-size:14px;font-weight:700;letter-spacing:.04em;border-radius:2px;text-decoration:none;transition:opacity .2s}
+.cn-btn:hover{opacity:.8}
+.cn-btn-primary{background:var(--accent);color:var(--black)}
+.cn-btn-secondary{background:transparent;color:var(--white);border:1px solid #333}
+.cn-footnote{font-size:12px;color:#444;line-height:2}
+.cn-socials{display:flex;justify-content:center;gap:20px;margin-top:40px;flex-wrap:wrap}
+.cn-socials a{font-size:11px;font-weight:600;color:#555;text-decoration:none;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.cn-socials a:hover{color:#fff}
+@media(max-width:480px){
+  .svc-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .tquotes{grid-template-columns:1fr}
+  .cn-btns{flex-direction:column;align-items:stretch}
+  .cn-btn{justify-content:center}
+  .ogrid{grid-template-columns:1fr}
+  .hero-img{height:190px}
+  .ytbanner-title{font-size:22px}
+  .about-text{font-size:15px}
+  .contact-h{font-size:22px}
+  .tgrid{grid-template-columns:1fr 1fr}
+  .figma-chip{width:calc(50% - 4px)}
+  .tchip{padding:8px 10px;font-size:10px;gap:7px}
+  .ticon{width:20px;height:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-side">
+    <a href="#hero">HOME</a><span class="nav-sep">/</span><a href="#projects">PROJECTS</a>
+  </div>
+  <div class="nav-side">
+    <a href="#about">ABOUT ME</a><span class="nav-sep">/</span><a href="#showreel">SHOWREEL</a>
+    <a href="#contact" class="btn-contact">CONTACT</a>
+  </div>
+  <button class="nav-burger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav-mobile" id="navMobile">
+  <a href="#hero" onclick="closeMenu()">Home</a>
+  <a href="#projects" onclick="closeMenu()">Projects</a>
+  <a href="#about" onclick="closeMenu()">About Me</a>
+  <a href="#showreel" onclick="closeMenu()">Showreel</a>
+  <a href="#contact" onclick="closeMenu()">Contact</a>
+</div>
+
+<section class="hero" id="hero">
+  <div class="hero-grid">
+    <div class="hero-side"><span class="ch tl"></span><span class="ch bl"></span></div>
+    <div class="hero-center">
+      <span class="ch tl"></span><span class="ch tr"></span><span class="ch bl"></span><span class="ch br"></span>
+      <img class="hero-img" decoding="async" src="images/hero.webp" alt="Hero">
+    </div>
+    <div class="hero-side r"><span class="ch tr"></span><span class="ch br"></span></div>
+  </div>
+  <div class="hero-bottom">
+    <div class="hero-logo">
+      <img class="hero-logo-img" src="images/logo.webp" alt="Logo" loading="lazy" decoding="async">
+      <span>NIKOREY</span>
+    </div>
+    <div class="hero-mid-div"></div>
+    <div class="hero-titles">
+      <p>2D &amp; 3D Motion Designer</p>
+      <p>3D Artist</p>
+      <p>Game Developer</p>
+    </div>
+  </div>
+</section>
+
+<section class="about reveal" id="about">
+  <div>
+    <div class="lbl"><span class="lbl-dot"></span> About me</div>
+    <p class="about-text">I'm a 2D &amp; 3D Motion Designer and 3D Artist based in Kazakhstan, working with brands, apps, and studios that care about how things look and feel in motion.<br><br>My work sits at the intersection of design and storytelling — I don't just animate things, I build visual systems that communicate. From app promos and cinematic ads to game development and 3D art, I pick the tool the idea needs, not the one that looks impressive on paper.<br><br>Clients have included Kaspi.kz, Welltory, Hulu, Stüssy, and Anixart.<br><br>Currently open for freelance projects and long-term collaborations.</p>
+  </div>
+  <div>
+    <ul class="skills">
+      <li class="sk"><div class="dots"><div class="d"></div></div>APP PROMOS</li>
+      <li class="sk"><div class="dots"><div class="d"></div><div class="d"></div></div>GAME DEVELOPMENT</li>
+      <li class="sk"><div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div></div>CINEMATIC ADS</li>
+      <li class="sk"><div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>3D ART &amp; VISUALIZATION</li>
+      <li class="sk"><div class="dots"><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div><div class="d"></div></div>2D &amp; 3D MOTION DESIGN</li>
+    </ul>
+    <div class="shapes"><div class="sh-gray"></div><div class="sh-dark"></div></div>
+    <div class="aname">ASU N.</div>
+    <div class="aexp">20+ projects</div>
+  </div>
+  <span class="cc bl">::</span><span class="cc br">::</span>
+</section>
+
+<section class="exp reveal" id="experience">
+  <div>
+    <div class="lbl"><span class="lbl-dot"></span> Experience</div>
+    <p class="exp-txt">I work across 2D, 3D and game dev. App promos, product showcases, cinematic reels — I pick the tool the idea needs, not the one that looks impressive on a CV</p>
+  </div>
+  <div class="char-wrap"><img src="images/char.webp" alt="Character" loading="lazy" decoding="async"></div>
+  <div>
+    <div class="lbl"><span class="lbl-dot"></span> Tools</div>
+    <div class="tgrid">
+      <div class="tchip"><img class="ticon" src="images/ae-1.webp" decoding="async" alt="After Effects">After Effects</div>
+      <div class="tchip"><img class="ticon" src="images/blender-1.webp" loading="lazy" decoding="async" alt="Blender">Blender</div>
+      <div class="tchip"><img class="ticon" src="images/unreal-engine-icon.webp" loading="lazy" decoding="async" alt="Unreal Engine 5">Unreal Engine 5</div>
+      <div class="tchip"><img class="ticon" src="images/davinci-1.webp" loading="lazy" decoding="async" alt="DaVinci Resolve">DaVinci Resolve</div>
+      <div class="tchip"><img class="ticon" src="images/ps-1.webp" loading="lazy" decoding="async" alt="Photoshop">Photoshop</div>
+      <div class="tchip"><img class="ticon" src="images/ai-1.webp" loading="lazy" decoding="async" alt="Illustrator">Illustrator</div>
+    </div>
+    <div class="figma-row">
+      <div class="figma-chip"><img class="ticon" src="images/1peI0uoxShe-Vi7qKY0VbRQ.webp" loading="lazy" decoding="async" alt="Figma">Figma</div>
+    </div>
+  </div>
+  <div class="exp-footer"><span>NIKOREY</span><span>Every detail is seen. Make it worthy.</span></div>
+  <span class="cc bl">::</span><span class="cc br">::</span>
+</section>
+
+<section class="showreel" id="showreel">
+  <div class="sr-dots"><span>::</span><span>::</span><span>::</span><span>::</span><span>::</span></div>
+  <h2 class="sr-title">SHOWREEL</h2>
+  <div class="video-wrap" style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 3px;">
+    <iframe 
+      src="https://www.youtube.com/embed/t2buavP11_Y" 
+      title="NIKOREY Showreel" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+      allowfullscreen
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+    </iframe>
+  </div>
+</section>
+
+<section class="services reveal">
+  <div class="sec-head">
+    <div class="lbl"><span class="lbl-dot"></span> What I do</div>
+    <h2>WHAT I DO</h2>
+    <p>From a 3-second logo reveal to a full cinematic brand film — every format, done right.</p>
+  </div>
+  <div class="svc-grid">
+    <div class="svc-card"><div class="svc-title">Logo Animation</div><div class="svc-desc">Animated logo reveals — from subtle and clean to bold and cinematic. Matched to your brand's personality.</div><div class="svc-price">Starting from $80</div></div>
+    <div class="svc-card"><div class="svc-title">Social Media Content</div><div class="svc-desc">Reels, Stories, TikTok videos, animated posts. Designed to stop the scroll, built for the platform it lives on.</div><div class="svc-price">Starting from $120</div></div>
+    <div class="svc-card"><div class="svc-title">App Promo Video</div><div class="svc-desc">Full motion promos for mobile apps — App Store, Google Play, social. Built to communicate the product and convert viewers into users.</div><div class="svc-price">Starting from $250</div></div>
+    <div class="svc-card"><div class="svc-title">2D Explainer Video</div><div class="svc-desc">Motion design that explains complex products simply. UI animations, feature walkthroughs, onboarding flows — clear and on-brand.</div><div class="svc-price">Starting from $350</div></div>
+    <div class="svc-card"><div class="svc-title">3D Product Visualization</div><div class="svc-desc">Product renders, 3D scenes, abstract art. Made in Blender with focus on atmosphere, light, and detail.</div><div class="svc-price">Starting from $300</div></div>
+    <div class="svc-card"><div class="svc-title">SaaS Motion Design</div><div class="svc-desc">Motion systems for digital products — dashboards, UI animations, feature demos. Makes software feel alive.</div><div class="svc-price">Starting from $400</div></div>
+    <div class="svc-card"><div class="svc-title">Cinematic Brand Ad</div><div class="svc-desc">Short-form brand films with a cinematic feel. Storytelling-first, visually driven, built for impact.</div><div class="svc-price">Starting from $500</div></div>
+    <div class="svc-card"><div class="svc-title">Full Brand Motion Kit</div><div class="svc-desc">A complete motion identity — logo animation, transitions, social templates, and more. Everything moves consistently.</div><div class="svc-price">Starting from $600</div></div>
+  </div>
+  <p class="svc-note">Final price depends on complexity, duration, and usage. Write to discuss your project.</p>
+</section>
+
+<section class="testimonials reveal">
+  <div class="lbl"><span class="lbl-dot"></span> Reviews</div>
+  <h2>WHAT CLIENTS SAY</h2>
+  <div class="tquotes">
+    <div class="tquote"><div class="tq-text">Nikolay captured exactly what we needed — the animation felt like it was made by someone who actually watches anime, not just a designer doing a job. Delivered fast, no back and forth.</div><div class="tq-author">Artem Sokolov · Product Manager, Anixart</div></div>
+    <div class="tquote"><div class="tq-text">Clean, on-brand, and ready to publish. We gave a brief, got back exactly what we imagined — and then some. Will work together again.</div><div class="tq-author">Dana Bekova · Marketing Lead, Kaspi.kz</div></div>
+    <div class="tquote"><div class="tq-text">We struggled to explain our product visually for a long time. Nikolay solved it in one motion piece. The way he translated health data into something emotional was impressive.</div><div class="tq-author">Ivan Petrov · Growth, Welltory</div></div>
+    <div class="tquote"><div class="tq-text">We needed to explain a complex logistics product to a general audience. The result was clear, trustworthy, and exactly the right tone for our brand.</div><div class="tq-author">Amir Seitkali · Founder, Jana Post</div></div>
+    <div class="tquote"><div class="tq-text">Rare to find a motion designer who actually understands streetwear culture. The piece felt authentic — not like an ad, like content.</div><div class="tq-author">Jake Morrison · Creative Director, Brand Campaign</div></div>
+    <div class="tquote"><div class="tq-text">Fast turnaround, strong concept from the start. Knew the brand language without much explanation. Solid work.</div><div class="tq-author">Sarah Chen · Marketing, Hulu</div></div>
+  </div>
+</section>
+
+<section class="projs" id="projects">
+  <h2 class="projs-h">Projects <span class="projs-yr">(2025 - 2026)</span></h2>
+  <div class="pb reveal">
+    <div class="pimgs"><img src="images/anixart-1.webp" alt="Anixart preview" loading="lazy" decoding="async"><img src="images/anixart-2.webp" alt="Anixart preview" loading="lazy" decoding="async"><img src="images/anixart-3.webp" alt="Anixart preview" loading="lazy" decoding="async"></div>
+    <div class="pmeta">
+      <div><div class="plbl">Project</div><div class="pname">Anixart</div><div class="ptype">2D/3D Motion App Promo</div>
+      <div class="ptagline">Bringing anime culture to life — frame by frame.</div>
+      <button class="case-toggle" onclick="toggleCase(this)" aria-expanded="false">Case Study <span class="ct-arrow">›</span></button>
+      <div class="case-study">
+        <div class="cs-block"><div class="cs-label">Overview</div><div class="cs-val">Anixart is a mobile app for discovering and tracking Japanese animation. The challenge was to create a promo that felt native to anime culture — not a generic app ad, but something fans would actually want to watch.</div></div>
+        <div class="cs-block"><div class="cs-label">What I did</div><div class="cs-val">Designed a hybrid 2D/3D motion system that blended flat graphic elements with depth and dimensionality. Every transition was built to feel like a scene cut — referencing anime editing language rather than standard app promo conventions.</div></div>
+        <div class="cs-block"><div class="cs-label">Result</div><div class="cs-val">A cinematic app promo that communicates the product's value in under 30 seconds while feeling like part of the culture it represents.</div></div>
+      </div>
+      </div>
+      <div><p class="pdesc">A mobile application that helps you explore a wide variety of Japanese animation works.</p>
+      <a class="see-proj" href="https://www.youtube.com/watch?v=Xu3Cu55jYAQ" target="_blank">See Project →</a></div>
+    </div>
+  </div>
+  <div class="pb reveal">
+    <div class="pimgs"><img src="images/hulu-1.webp" alt="Hulu preview" loading="lazy" decoding="async"><img src="images/hulu-2.webp" alt="Hulu preview" loading="lazy" decoding="async"><img src="images/hulu-3.webp" alt="Hulu preview" loading="lazy" decoding="async"></div>
+    <div class="pmeta">
+      <div><div class="plbl">Project</div><div class="pname">Hulu</div><div class="ptype">2D Motion Design</div>
+      <div class="ptagline">Streaming energy — translated into motion.</div>
+      <button class="case-toggle" onclick="toggleCase(this)" aria-expanded="false">Case Study <span class="ct-arrow">›</span></button>
+      <div class="case-study">
+        <div class="cs-block"><div class="cs-label">Overview</div><div class="cs-val">Hulu is one of the biggest streaming platforms in the US, owned by Disney. The goal was to capture the brand's distinct energy — bold, fast, entertainment-first — in a motion piece that could live across digital touchpoints.</div></div>
+        <div class="cs-block"><div class="cs-label">What I did</div><div class="cs-val">Leaned into Hulu's iconic green and its confident visual identity. Built a motion system with tight cuts, kinetic typography, and rhythm-driven transitions that match the pace of how people consume streaming content today.</div></div>
+        <div class="cs-block"><div class="cs-label">Result</div><div class="cs-val">A high-energy motion piece that feels native to Hulu's brand world — punchy, modern, and platform-ready.</div></div>
+      </div>
+      </div>
+      <div><p class="pdesc">— is an American subscription streaming television service owned by Disney Streaming.</p>
+      <a class="see-proj" href="https://www.youtube.com/watch?v=wmzvbGDuuJs" target="_blank">See Project →</a></div>
+    </div>
+  </div>
+  <div class="pb reveal">
+    <div class="pimgs"><img src="images/kaspi-1.webp" alt="Kaspi preview" loading="lazy" decoding="async"><img src="images/kaspi-2.webp" alt="Kaspi preview" loading="lazy" decoding="async"><img src="images/kaspi-3.webp" alt="Kaspi preview" loading="lazy" decoding="async"></div>
+    <div class="pmeta">
+      <div><div class="plbl">Project</div><div class="pname">Kaspi.kz</div><div class="ptype">2D Motion Design</div>
+      <div class="ptagline">Motion for the super app everyone in Kazakhstan uses.</div>
+      <button class="case-toggle" onclick="toggleCase(this)" aria-expanded="false">Case Study <span class="ct-arrow">›</span></button>
+      <div class="case-study">
+        <div class="cs-block"><div class="cs-label">Overview</div><div class="cs-val">Kaspi.kz is Kazakhstan's leading fintech super app — combining payments, banking, and marketplace in one. The task was to create motion content that simplified complex financial features without losing the brand's bold, confident visual identity.</div></div>
+        <div class="cs-block"><div class="cs-label">What I did</div><div class="cs-val">Developed a 2D motion system using Kaspi's brand language — clean geometry, strong typography, and purposeful animation timing. Each scene was structured to communicate one idea clearly, respecting the short attention span of social media audiences.</div></div>
+        <div class="cs-block"><div class="cs-label">Result</div><div class="cs-val">Motion content ready for social and in-app placements, communicating product features in a way that's instantly readable for millions of daily users.</div></div>
+      </div>
+      </div>
+      <div><p class="pdesc">— is the largest fintech company and the leading super app in Kazakhstan, combining a mobile payments system, a digital bank, and a large marketplace.</p>
+      <a class="see-proj" href="https://www.youtube.com/watch?v=Sz7-bm14oxM" target="_blank">See Project →</a></div>
+    </div>
+  </div>
+  <div class="pb reveal">
+    <div class="pimgs"><img src="images/stussy-1.webp" alt="Stüssy preview" loading="lazy" decoding="async"><img src="images/stussy-2.webp" alt="Stüssy preview" loading="lazy" decoding="async"><img src="images/stussy-3.webp" alt="Stüssy preview" loading="lazy" decoding="async"></div>
+    <div class="pmeta">
+      <div><div class="plbl">Project</div><div class="pname">Stüssy</div><div class="ptype">2D Motion Design</div>
+      <div class="ptagline">Streetwear aesthetics in motion.</div>
+      <button class="case-toggle" onclick="toggleCase(this)" aria-expanded="false">Case Study <span class="ct-arrow">›</span></button>
+      <div class="case-study">
+        <div class="cs-block"><div class="cs-label">Overview</div><div class="cs-val">Stüssy is an American streetwear icon built on decades of skate and surf culture. The brief was to create motion content that honors the brand's heritage while feeling fresh for today's digital-first audience.</div></div>
+        <div class="cs-block"><div class="cs-label">What I did</div><div class="cs-val">Built a 2D motion piece rooted in Stüssy's graphic DNA — bold script, raw textures, and the kind of effortless cool the brand has always stood for. Kept the animation intentionally loose and organic, avoiding the over-polished look that doesn't fit streetwear culture.</div></div>
+        <div class="cs-block"><div class="cs-label">Result</div><div class="cs-val">Motion content that speaks the brand's language fluently — something the community would recognize as authentically Stüssy, not just a branded ad.</div></div>
+      </div>
+      </div>
+      <div><p class="pdesc">— is an American streetwear brand known for its iconic script logo and skate/surf culture roots.</p>
+      <a class="see-proj" href="https://www.youtube.com/watch?v=Acx7hNc-Ya4" target="_blank">See Project →</a></div>
+    </div>
+  </div>
+  <div class="pb reveal">
+    <div class="pimgs"><img src="images/jana-1.webp" alt="Jana Post preview" loading="lazy" decoding="async"><img src="images/jana-2.webp" alt="Jana Post preview" loading="lazy" decoding="async"><img src="images/jana-3.webp" alt="Jana Post preview" loading="lazy" decoding="async"></div>
+    <div class="pmeta">
+      <div><div class="plbl">Project</div><div class="pname">Jana Post</div><div class="ptype">2D Motion Design</div>
+      <div class="ptagline">Making cross-border commerce feel effortless.</div>
+      <button class="case-toggle" onclick="toggleCase(this)" aria-expanded="false">Case Study <span class="ct-arrow">›</span></button>
+      <div class="case-study">
+        <div class="cs-block"><div class="cs-label">Overview</div><div class="cs-val">Jana Post is the first private platform enabling users to buy goods from Chinese manufacturers and track logistics from China to Kazakhstan. The challenge: explain a complex cross-border supply chain in a way that feels simple and trustworthy.</div></div>
+        <div class="cs-block"><div class="cs-label">What I did</div><div class="cs-val">Designed a clear 2D motion narrative that walks the user through the journey — from product selection in China to delivery in Kazakhstan. Used map-based transitions, clean iconography, and a logical visual flow to make the process feel transparent and easy.</div></div>
+        <div class="cs-block"><div class="cs-label">Result</div><div class="cs-val">An explainer-style promo that builds immediate trust with a new audience, turning a complex logistics product into something anyone can understand in under 60 seconds.</div></div>
+      </div>
+      </div>
+      <div><p class="pdesc">The first private platform enabling users to purchase goods from Chinese manufacturers and track logistics from China to Kazakhstan.</p>
+      <a class="see-proj" href="https://www.youtube.com/watch?v=xAopQDsNNtc" target="_blank">See Project →</a></div>
+    </div>
+  </div>
+  <div class="pb reveal">
+    <div class="pimgs"><img src="images/welltory-1.webp" alt="Welltory preview" loading="lazy" decoding="async"><img src="images/welltory-2.webp" alt="Welltory preview" loading="lazy" decoding="async"><img src="images/welltory-3.webp" alt="Welltory preview" loading="lazy" decoding="async"></div>
+    <div class="pmeta">
+      <div><div class="plbl">Project</div><div class="pname">Welltory</div><div class="ptype">2D/3D Motion Design</div>
+      <div class="ptagline">Making health data feel human.</div>
+      <button class="case-toggle" onclick="toggleCase(this)" aria-expanded="false">Case Study <span class="ct-arrow">›</span></button>
+      <div class="case-study">
+        <div class="cs-block"><div class="cs-label">Overview</div><div class="cs-val">Welltory is a smart health app that measures heart rate variability and stress levels. Health data is often cold and clinical — the challenge was to make it feel personal, approachable, and worth paying attention to.</div></div>
+        <div class="cs-block"><div class="cs-label">What I did</div><div class="cs-val">Combined 2D data visualizations with 3D organic forms to create a visual language that bridges science and emotion. The motion follows a calm, breathing rhythm — intentionally paced to reflect the app's core theme of wellness and recovery.</div></div>
+        <div class="cs-block"><div class="cs-label">Result</div><div class="cs-val">An app promo that turns raw biometric data into a compelling visual story — making a complex product feel immediately understandable and desirable.</div></div>
+      </div>
+      </div>
+      <div><p class="pdesc">A smart application that measures heart rate variability and determines heart rate.</p>
+      <a class="see-proj" href="https://www.youtube.com/watch?v=FvtgrVsDcqE" target="_blank">See Project →</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="other">
+  <h2>Other Projects</h2>
+  <div class="ogrid">
+    <div class="ocard"><img src="images/other-1.webp" alt="Orbit" loading="lazy" decoding="async"><a class="osee" href="https://www.instagram.com/p/DYz0R9ajNsa/?img_index=1" target="_blank">See Project →</a></div>
+    <div class="ocard"><img src="images/other-2.webp" alt="Island" loading="lazy" decoding="async"><a class="osee" href="https://www.instagram.com/p/DYcdwuZjGZD/?img_index=1" target="_blank">See Project →</a></div>
+    <div class="ocard"><img src="images/other-3.webp" alt="TVs" loading="lazy" decoding="async"><a class="osee" href="https://www.youtube.com/watch?v=H0F6nzPrgXI" target="_blank">See Project →</a></div>
+    <div class="ocard"><img src="images/other-4.webp" alt="Monesy" loading="lazy" decoding="async"><a class="osee" href="https://www.youtube.com/watch?v=eiViyY09l7w" target="_blank">See Project →</a></div>
+    <div class="ocard"><img src="images/other-5.webp" alt="Maximilian" loading="lazy" decoding="async"><a class="osee" href="https://www.youtube.com/watch?v=puCanIORqeY" target="_blank">See Project →</a></div>
+    <div class="ocard"><img src="images/other-6.webp" alt="Skyfall" loading="lazy" decoding="async"><a class="osee" href="https://www.instagram.com/p/DYz01bqgHeH/?img_index=1" target="_blank">See Project →</a></div>
+  </div>
+</section>
+
+<section class="ytbanner">
+  <img class="ytbanner-bg" src="images/pracrtical.webp" alt="" loading="lazy" decoding="async">
+  <a class="go-wrap" href="https://www.youtube.com/@nikoreyyy" target="_blank">
+    <div class="go-box">
+      <span class="go-corner tl"></span><span class="go-corner tr"></span>
+      <span class="go-corner br"></span><span class="go-corner bl"></span>
+      GO
+    </div>
+  </a>
+  <div class="ytbanner-bottom">
+    <div class="ytbanner-title">PRACTICAL<br>DESIGN<br>CONTENT,<br>NO FLUFF.</div>
+    <div class="ytbanner-desc">I share my own projects, real-world tips, and techniques that actually work — helping designers grow without the overwhelm.</div>
+  </div>
+</section>
+
+<section class="howwork reveal">
+  <div class="lbl"><span class="lbl-dot"></span> Process</div>
+  <h2>HOW WE WORK TOGETHER</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">Step 01</div>
+      <div class="step-title">Brief</div>
+      <div class="step-body">You share what you need: the product, the platform, the vibe. No lengthy forms — a message or a short call is enough to get started.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 02</div>
+      <div class="step-title">Concept</div>
+      <div class="step-body">I develop the visual direction: style frames, color, motion language. You see exactly what the final piece will feel like before a single frame is animated.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 03</div>
+      <div class="step-title">Production</div>
+      <div class="step-body">Full animation, sound design sync, and format delivery. I work fast without cutting corners — typical turnaround is 5–10 days depending on scope.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">Step 04</div>
+      <div class="step-title">Delivery</div>
+      <div class="step-body">You receive all final files in the formats you need — social, web, broadcast, or all three. Two rounds of revisions included as standard.</div>
+    </div>
+  </div>
+</section>
+
+
+
+<section class="contact reveal" id="contact">
+  <div>
+    <h2 class="contact-h">Let's work<br>together.</h2>
+    <p style="font-size:13px;color:#666;margin-top:16px;line-height:1.75;max-width:340px">Got a project, a question, or just want to say hi — pick the way that works for you.</p>
+    <div style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="https://t.me/nikoreyyx" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:#111;color:#fff;font-size:12px;font-weight:700;text-decoration:none;padding:11px 22px;letter-spacing:.03em">Open Telegram →</a>
+      <a href="mailto:satoruetc@gmail.com" style="display:inline-flex;align-items:center;gap:6px;background:transparent;color:#111;border:1px solid #ccc;font-size:12px;font-weight:700;text-decoration:none;padding:11px 22px;letter-spacing:.03em">Send Email →</a>
+    </div>
+    <p style="font-size:11px;color:#aaa;margin-top:14px;line-height:1.9">Usually reply within a few hours on Telegram · 24h max on email<br>Based in Kazakhstan · Available worldwide · Open for freelance &amp; long-term projects</p>
+  </div>
+  <div>
+    <div class="clbl">SOCIAL</div>
+    <ul class="csocial">
+      <li><a href="https://www.instagram.com/nikoreyyx/" target="_blank">Instagram</a></li>
+      <li><a href="https://www.behance.net/nikoreymotion" target="_blank">Behance</a></li>
+      <li><a href="https://www.tiktok.com/@nikoreyy_" target="_blank">Tik - Tok</a></li>
+      <li><a href="https://www.linkedin.com/in/nikorey/" target="_blank">LinkedIn</a></li>
+      <li><a href="https://t.me/nikoreyyx" target="_blank">Telegram</a></li>
+      <li><a href="https://www.youtube.com/@nikoreyyy" target="_blank">Youtube</a></li>
+    </ul>
+  </div>
+</section>
+<footer>NIKOREY ©2025 - 2026</footer>
+<script>
+function toggleCase(btn){
+  const panel=btn.nextElementSibling;
+  const isOpen=panel.classList.contains('open');
+  panel.classList.toggle('open',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+  btn.setAttribute('aria-expanded',String(!isOpen));
+}
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('visible')}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+function toggleMenu(){const m=document.getElementById('navMobile');m.classList.toggle('open')}
+function closeMenu(){document.getElementById('navMobile').classList.remove('open')}
+document.addEventListener('click',e=>{
+  const m=document.getElementById('navMobile');
+  if(m.classList.contains('open')&&!e.target.closest('nav')&&!e.target.closest('#navMobile'))m.classList.remove('open');
+});
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t){e.preventDefault();const top=t.getBoundingClientRect().top+window.scrollY-57;window.scrollTo({top,behavior:'smooth'})}
+  });
+});
+</script>
+</body>
+</html>
